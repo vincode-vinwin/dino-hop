@@ -19,6 +19,22 @@ let dino = {
   height : dinoHeight
 }
 
+// cactus:
+let cactusArray = [];
+
+let cactus1Width = 34;
+let cactus2Width = 69;
+let cactus3Width = 102;
+
+let cactusHeight = 70;
+let cactusX = 700;
+let cactusY = boardHeight - cactusHeight;
+
+let cactus1Img;
+let cactus2Img;
+let cactus3Img;
+
+
 window.onload = function() {
   board = document.getElementById("board");
   board.height = boardHeight;
@@ -35,6 +51,16 @@ window.onload = function() {
   dinoImg.onload = function() {
     context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
   }
+
+  cactus1Img = new Image();
+  cactus1Img.src = "./img/cactus1.png";
+  
+  cactus2Img = new Image();
+  cactus2Img.src = "./img/cactut2.png";
+
+  cactus3Img = new Image();
+  cactus3Img.src = "./img/cactus3.png";
+
 
   requestAnimationFrame(update);
 
