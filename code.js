@@ -35,4 +35,13 @@ window.onload = function() {
   dinoImg.onload = function() {
     context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
   }
+
+  requestAnimationFrame(update);
+
+}
+
+function update() {
+  requestAnimationFrame(update);
+
+  context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
 }
