@@ -132,8 +132,9 @@ function update() {
     currentScore !== lastMilestone
   ) {
     blink = true;
-    blinkTimer = 120;
+    blinkTimer = 150;
     lastMilestone = currentScore;
+    velocityX -= .5
   }
   
   if (blink) {
@@ -144,6 +145,7 @@ function update() {
   }
   
   let displayScore;
+  let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
 
   if (!blink) {
     displayScore = Math.floor(score).toString().padStart(5, "0");
@@ -221,6 +223,7 @@ function restartGame_onclick(e) {
   score = 0;
   blink = false;
   blinkTimer = 0;
+  velocityX = -8;
 
   // reset dino image
   dinoImg.src = "./img/dino.png";
@@ -238,6 +241,7 @@ function restartGame_withSpace(e) {
     score = 0;
     blink = false;
     blinkTimer = 0;
+    velocityX = -8;
 
     // reset dino image
     dinoImg.src = "./img/dino.png";
