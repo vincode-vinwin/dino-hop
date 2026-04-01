@@ -52,6 +52,7 @@ let score = 0;
 let GameOver = false;
 let blink = false;
 let blinkTimer = 0;
+let lastMilestone = 0;
 
 
 window.onload = function() {
@@ -124,10 +125,15 @@ function update() {
   score += Math.abs(velocityX) * 0.01;
   
   let currentScore = Math.floor(score);
-  
-  if (currentScore % 100 === 0 && currentScore !== 0 && blinkTimer === 0) {
+
+  if (
+    currentScore % 100 === 0 &&
+    currentScore !== 0 &&
+    currentScore !== lastMilestone
+  ) {
     blink = true;
-    blinkTimer = 120; // frames (~0.5 sec at 60fps)
+    blinkTimer = 30;
+    lastMilestone = currentScore;
   }
   
   if (blink) {
