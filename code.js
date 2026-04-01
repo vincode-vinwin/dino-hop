@@ -132,7 +132,7 @@ function update() {
     currentScore !== lastMilestone
   ) {
     blink = true;
-    blinkTimer = 30;
+    blinkTimer = 120;
     lastMilestone = currentScore;
   }
   
@@ -143,12 +143,13 @@ function update() {
     }
   }
   
+  let displayScore;
+
   if (!blink) {
-    let displayScore = Math.floor(score).toString().padStart(5, "0");
+    displayScore = Math.floor(score).toString().padStart(5, "0");
   } else {
-    let displayScore = (Math.floor(score) - (Math.floor(score) % 100)).toString().padStart(5, "0")
+    displayScore = (Math.floor(score) - (Math.floor(score) % 100)).toString().padStart(5, "0");
   }
-  let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
 
   context.fillStyle = "black";
   context.font = "20px monospace";
@@ -218,6 +219,8 @@ function restartGame_onclick(e) {
   velocityY = 0;
   dino.y = dinoY;
   score = 0;
+  blink = false;
+  blinkTimer = 0;
 
   // reset dino image
   dinoImg.src = "./img/dino.png";
@@ -233,6 +236,8 @@ function restartGame_withSpace(e) {
     velocityY = 0;
     dino.y = dinoY;
     score = 0;
+    blink = false;
+    blinkTimer = 0;
 
     // reset dino image
     dinoImg.src = "./img/dino.png";
