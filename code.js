@@ -47,8 +47,11 @@ GameOverImg.src = "./img/game-over.png";
 
 // gameplay:
 let highScore = 0;
-let GameOver = false;
 let score = 0;
+
+let GameOver = false;
+let blink = false;
+let blinkTimer = 0;
 
 
 window.onload = function() {
@@ -119,16 +122,37 @@ function update() {
 
   // score:
   score += Math.abs(velocityX) * 0.01;
-
-  let displayScore = Math.floor(score).toString().padStart(5, "0");
+  
+  let currentScore = Math.floor(score);
+  
+  if (currentScore % 100 === 0 && currentScore !== 0 && blinkTimer === 0) {
+    blink = true;
+    blinkTimer = 120; // frames (~0.5 sec at 60fps)
+  }
+  
+  if (blink) {
+    blinkTimer--;
+    if (blinkTimer <= 0) {
+      blink = false;
+    }
+  }
+  
+  if (!blink) {
+    let displayScore = Math.floor(score).toString().padStart(5, "0");
+  } else {
+    let displayScore = (Math.floor(score) - (Math.floor(score) % 100)).toString().padStart(5, "0")
+  }
   let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
 
   context.fillStyle = "black";
   context.font = "20px monospace";
 
+  // blink effect (hide score every few frames)
+  if (!blink || blinkTimer % 24 < 12) {
+    context.fillText(displayScore, boardWidth - 60, 25);
+  }
   context.fillText("HI " + displayHigh, boardWidth - 160, 25);
-  context.fillText(displayScore, boardWidth - 60, 25);
-
+  
   if (score > highScore) {
     highScore = Math.floor(score);
     localStorage.setItem("highScore", highScore);
