@@ -45,6 +45,8 @@ let score = 0;
 // restart:
 let restartImg = new Image();
 restartImg.src = "./img/reset.png"; // make sure this file exists
+let GameOverImg = new Image();
+GameOverImg.src = "./img/game-over.png";
 
 
 window.onload = function() {
@@ -87,6 +89,7 @@ function update() {
   
   if (GameOver) {
     context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
+    context.drawImage(GameOverImg, boardWidth/2 - 200, boardHeight/2 - 50, 386, 40);
     return;
   }
   
