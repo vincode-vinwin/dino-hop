@@ -39,14 +39,16 @@ let velocityX = -8; // cactus moving left speed
 let velocityY = 0;
 let gravity = .4;
 
-let GameOver = false;
-let score = 0;
-
 // restart:
 let restartImg = new Image();
 restartImg.src = "./img/reset.png"; // make sure this file exists
 let GameOverImg = new Image();
 GameOverImg.src = "./img/game-over.png";
+
+// gameplay:
+let highScore = 0;
+let GameOver = false;
+let score = 0;
 
 
 window.onload = function() {
@@ -74,6 +76,8 @@ window.onload = function() {
 
   cactus3Img = new Image();
   cactus3Img.src = "./img/cactus3.png";
+
+  highScore = localStorage.getItem("highScore") || 0;
 
 
   requestAnimationFrame(update);
@@ -117,10 +121,18 @@ function update() {
   score += Math.abs(velocityX) * 0.01;
 
   let displayScore = Math.floor(score).toString().padStart(5, "0");
+  let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
 
   context.fillStyle = "black";
-  context.font = "20px Arial";
+  context.font = "20px monospace";
+
+  context.fillText("HI " + displayHigh, boardWidth - 160, 25);
   context.fillText(displayScore, boardWidth - 60, 25);
+
+  if (score > highScore) {
+    highScore = Math.floor(score);
+    localStorage.setItem("highScore", highScore);
+  }
 }
 
 function moveDino(e) {
@@ -201,5 +213,5 @@ function detecktColision(a, b) {
   return a.x < b.x + b.width &&  // a's top left corner doesn't reach b's top right corner
          a.x + a.width > b.x &&  // a's top right corner passes b's top left corner
          a.y < b.y + b.height && // a's top left corner doesn't reach b's bottom left corner
-         a.y + a.height > b.y;    // a's bottom left corner passes b's top left corner
+         a.y + a.height > b.y;   // a's bottom left corner passes b's top left corner
 }
