@@ -99,11 +99,15 @@ function update() {
     if (detecktColision(dino, cactus)) {
       GameOver = true;
       dinoImg.src = "./img/dino-dead.png";
-      dinoImg.onload = function() {
-        context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height)
-      }
+      context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height)
     }
   }
+
+  // score:
+  context.fillStyle="Black";
+  context.font="20px arial black";
+  score++;
+  context.fillText(score, 5, 20);
 }
 
 function moveDino(e) {
