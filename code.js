@@ -42,6 +42,10 @@ let gravity = .4;
 let GameOver = false;
 let score = 0;
 
+// restart:
+let restartImg = new Image();
+restartImg.src = "./img/reset.png"; // make sure this file exists
+
 
 window.onload = function() {
   board = document.getElementById("board");
@@ -73,6 +77,8 @@ window.onload = function() {
   requestAnimationFrame(update);
   setInterval(placeCactus, 1000); // 1000 miliseconds = 1 second
   document.addEventListener("keydown", moveDino)
+  document.addEventListener("click", restartGame_onclick);
+  document.addEventListener("keydown", restartGame_withSpace);
 
 }
 
@@ -80,6 +86,7 @@ function update() {
   requestAnimationFrame(update);
   
   if (GameOver) {
+    context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
     return;
   }
   
@@ -152,6 +159,35 @@ function placeCactus() {
   }
   if (cactusArray.length > 5) {
     cactusArray.shift(); // remove the first element from the array so that the array doesn't constently grow
+  }
+}
+
+function restartGame_onclick(e) {
+  if (!GameOver) return;
+  // reset game state
+  GameOver = false;
+  cactusArray = [];
+  velocityY = 0;
+  dino.y = dinoY;
+  score = 0;
+
+  // reset dino image
+  dinoImg.src = "./img/dino.png";
+}
+
+
+function restartGame_withSpace(e) {
+  if (!GameOver) return;
+  if (e.code == "Space") {
+    // reset game state
+    GameOver = false;
+    cactusArray = [];
+    velocityY = 0;
+    dino.y = dinoY;
+    score = 0;
+
+    // reset dino image
+    dinoImg.src = "./img/dino.png";
   }
 }
 
