@@ -72,19 +72,22 @@ window.onload = function() {
 
   requestAnimationFrame(update);
   setInterval(placeCactus, 1000); // 1000 miliseconds = 1 second
+  document.addEventListener("keydown", moveDino)
 
 }
 
 function update() {
+  requestAnimationFrame(update);
+  
   if (GameOver) {
     return;
   }
   
-  requestAnimationFrame(update);
-
   context.clearRect(0, 0, board.width, board.height);
   
   // dino:
+  velocityY += gravity;
+  dino.y = Math.min(dino.y + velocityY, dinoY); // aply gravity to current dino.y, making sure it doesn't exceed the ground
   context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
 
   // cactus:
@@ -98,6 +101,11 @@ function update() {
 function moveDino(e) {
   if (GameOver) {
     return;
+  }
+
+  if ((e.code == "Space" || e.code == "ArrowUp") && dino.y == dinoY) {
+    // jump:
+    velocityY = -10;
   }
 }
 
