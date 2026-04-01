@@ -114,10 +114,13 @@ function update() {
   }
 
   // score:
-  context.fillStyle="Black";
-  context.font="20px arial black";
-  score++;
-  context.fillText(score, 5, 20);
+  score += Math.abs(velocityX) * 0.01;
+
+  let displayScore = Math.floor(score).toString().padStart(5, "0");
+
+  context.fillStyle = "black";
+  context.font = "20px Arial";
+  context.fillText(displayScore, boardWidth - 60, 25);
 }
 
 function moveDino(e) {
