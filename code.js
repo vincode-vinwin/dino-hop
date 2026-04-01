@@ -47,6 +47,9 @@ GameOverImg.src = "./img/game-over.png";
 
 // gameplay:
 let highScore = 0;
+let hiBlink = false;
+let hiBlinkTimer = 0;
+
 let score = 0;
 
 let GameOver = false;
@@ -116,8 +119,19 @@ function update() {
 
     if (detecktColision(dino, cactus)) {
       GameOver = true;
+
+      let finalScore = Math.floor(score);
+
+      if (finalScore > highScore) {
+        highScore = finalScore;
+        localStorage.setItem("highScore", highScore);
+        hiBlink = true;       // trigger flashing
+        hiBlinkTimer = 60;    // duration
+      }
+
       dinoImg.src = "./img/dino-dead.png";
-      context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height)
+
+      score = finalScore;
     }
   }
 
@@ -143,6 +157,14 @@ function update() {
       blink = false;
     }
   }
+
+  if (hiBlink) {
+    hiBlinkTimer--;
+
+    if (hiBlinkTimer <= 0) {
+      hiBlink = false;
+    }
+  }
   
   let displayScore;
   let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
@@ -160,11 +182,10 @@ function update() {
   if (!blink || blinkTimer % 24 < 12) {
     context.fillText(displayScore, boardWidth - 60, 25);
   }
-  context.fillText("HI " + displayHigh, boardWidth - 160, 25);
-  
-  if (score > highScore) {
-    highScore = Math.floor(score);
-    localStorage.setItem("highScore", highScore);
+
+  // HI score (blinks only when beaten)
+  if (!hiBlink || hiBlinkTimer % 6 < 3) {
+    context.fillText("HI " + displayHigh, boardWidth - 160, 25);
   }
 }
 
@@ -224,6 +245,8 @@ function restartGame_onclick(e) {
   blink = false;
   blinkTimer = 0;
   velocityX = -8;
+  hiBlink = false;
+  hiBlinkTimer = 0;
 
   // reset dino image
   dinoImg.src = "./img/dino.png";
@@ -242,6 +265,8 @@ function restartGame_withSpace(e) {
     blink = false;
     blinkTimer = 0;
     velocityX = -8;
+    hiBlink = false;
+    hiBlinkTimer = 0;
 
     // reset dino image
     dinoImg.src = "./img/dino.png";
