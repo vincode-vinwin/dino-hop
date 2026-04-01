@@ -96,7 +96,7 @@ function update() {
     cactus.x += velocityX;
     context.drawImage(cactus.img, cactus.x, cactus.y, cactus.width, cactus.height);
 
-    if (DetecktColision(dino, cactus)) {
+    if (detecktColision(dino, cactus)) {
       GameOver = true;
       dinoImg.src = "./img/dino-dead.png";
       dinoImg.onload = function() {
@@ -151,9 +151,9 @@ function placeCactus() {
   }
 }
 
-function DetecktColision(a, b) {
+function detecktColision(a, b) {
   return a.x < b.x + b.width &&  // a's top left corner doesn't reach b's top right corner
          a.x + a.width > b.x &&  // a's top right corner passes b's top left corner
          a.y < b.y + b.height && // a's top left corner doesn't reach b's bottom left corner
-         a.y + a.heght > b.y;    // a's bottom left corner passes b's top left corner
+         a.y + a.height > b.y;    // a's bottom left corner passes b's top left corner
 }
