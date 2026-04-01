@@ -24,5 +24,15 @@ window.onload = function() {
   board.height = boardHeight;
   board.width = boardWidth;
 
-  context = board.getContext("2d");
+  context = board.getContext("2d"); // used for drawing on the board
+
+  // draw initial dinosoar
+  // context.fillStyle="green";
+  // context.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+  dinoImg = new Image();
+  dinoImg.src = "./img/dino.png";
+  dinoImg.onload = function() {
+    context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+  }
 }
