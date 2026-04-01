@@ -76,6 +76,10 @@ window.onload = function() {
 }
 
 function update() {
+  if (GameOver) {
+    return;
+  }
+  
   requestAnimationFrame(update);
 
   context.clearRect(0, 0, board.width, board.height);
@@ -91,9 +95,17 @@ function update() {
   }
 }
 
-
+function moveDino(e) {
+  if (GameOver) {
+    return;
+  }
+}
 
 function placeCactus() {
+  if (GameOver) {
+    return;
+  }
+
   // place cactus
   let cactus = {
     img : null,
