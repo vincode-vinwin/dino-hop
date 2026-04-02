@@ -99,8 +99,21 @@ function update() {
   requestAnimationFrame(update);
   
   if (GameOver) {
+    // draw score first
+
+    context.fillStyle = "black";
+    context.font = "20px monospace";
+
+    if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
+      context.fillText("HI " + displayHigh, boardWidth - 160, 25);
+    }
+
+    context.fillText(displayScore, boardWidth - 60, 25);
+
+    // then draw UI
     context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
     context.drawImage(GameOverImg, boardWidth/2 - 200, boardHeight/2 - 50, 386, 40);
+
     return;
   }
   
@@ -126,7 +139,7 @@ function update() {
         highScore = finalScore;
         localStorage.setItem("highScore", highScore);
         hiBlink = true;       // trigger flashing
-        hiBlinkTimer = 120;    // duration
+        hiBlinkTimer = 180;   // duration
       }
 
       dinoImg.src = "./img/dino-dead.png";
@@ -184,7 +197,7 @@ function update() {
   }
 
   // HI score (blinks only when beaten)
-  if (!hiBlink || Math.floor((hiBlinkTimer / 5) % 2 === 0)) {
+  if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
     context.fillText("HI " + displayHigh, boardWidth - 160, 25);
   }
 }
