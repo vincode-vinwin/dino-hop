@@ -35,7 +35,7 @@ let cactus2Img;
 let cactus3Img;
 
 // physics:
-let velocityX = -4; // cactus moving left speed
+let velocityX = -8; // cactus moving left speed
 let velocityY = 0;
 let gravity = .4;
 
@@ -84,11 +84,11 @@ window.onload = function() {
   cactus3Img = new Image();
   cactus3Img.src = "./img/cactus3.png";
 
-  highScore = 0;
+  highScore = localStorage.getItem("highScore") || 0;
 
 
   requestAnimationFrame(update);
-  setInterval(placeCactus, 1000); // 1000 miliseconds = 1 second
+  setInterval(placeCactus, 1200); // 1000 miliseconds = 1 second
   document.addEventListener("keydown", moveDino)
   document.addEventListener("click", restartGame_onclick);
   document.addEventListener("keydown", restartGame_withSpace);
@@ -97,24 +97,55 @@ window.onload = function() {
 
 function update() {
   requestAnimationFrame(update);
-  
+
   context.clearRect(0, 0, board.width, board.height);
 
-  // ===== SCORE LOGIC FIRST =====
-  
-  let currentScore = Math.floor(score);
-  
-  if (
-    currentScore % 100 === 0 &&
-    currentScore !== 0 &&
-    currentScore !== lastMilestone
-  ) {
-    blink = true;
-    blinkTimer = 150;
-    lastMilestone = currentScore;
-    velocityX -= .5;
+  // ===== UPDATE (only if game running) =====
+  if (!GameOver) {
+    // dino physics
+    velocityY += gravity;
+    dino.y = Math.min(dino.y + velocityY, dinoY);
+
+    // move cactus + collision
+    for (let i = 0; i < cactusArray.length; i++) {
+      let cactus = cactusArray[i];
+      cactus.x += velocityX;
+
+      if (detecktColision(dino, cactus)) {
+        GameOver = true;
+
+        let finalScore = Math.floor(score);
+
+        if (finalScore > highScore) {
+          highScore = finalScore;
+          localStorage.setItem("highScore", highScore);
+          hiBlink = true;
+          hiBlinkTimer = 120;
+        }
+
+        dinoImg.src = "./img/dino-dead.png";
+        score = finalScore;
+      }
+    }
+
+    // score update
+    score += Math.abs(velocityX) * 0.01;
+
+    let currentScore = Math.floor(score);
+
+    if (
+      currentScore % 100 === 0 &&
+      currentScore !== 0 &&
+      currentScore !== lastMilestone
+    ) {
+      blink = true;
+      blinkTimer = 150;
+      lastMilestone = currentScore;
+      velocityX -= 0.5;
+    }
   }
-  
+
+  // ===== BLINK TIMERS (always run) =====
   if (blink) {
     blinkTimer--;
     if (blinkTimer <= 0) blink = false;
@@ -124,67 +155,47 @@ function update() {
     hiBlinkTimer--;
     if (hiBlinkTimer <= 0) hiBlink = false;
   }
-  
-  let displayScore;
+
+  // ===== PREPARE SCORE TEXT =====
   let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
-  
-  if (!blink) {
-    displayScore = Math.floor(score).toString().padStart(5, "0");
-  } else {
-    displayScore = (Math.floor(score) - (Math.floor(score) % 100)).toString().padStart(5, "0");
+
+  let baseScore = Math.floor(score);
+  let shownScore = (!blink)
+    ? baseScore
+    : baseScore - (baseScore % 100);
+
+  let displayScore = shownScore.toString().padStart(5, "0");
+
+  // ===== DRAW =====
+
+  // dino
+  context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+
+  // cactus
+  for (let i = 0; i < cactusArray.length; i++) {
+    let cactus = cactusArray[i];
+    context.drawImage(cactus.img, cactus.x, cactus.y, cactus.width, cactus.height);
   }
 
+  // score text
   context.fillStyle = "black";
   context.font = "20px monospace";
 
-  // HI score blink
+  // HI score (blink when beaten)
   if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
     context.fillText("HI " + displayHigh, boardWidth - 160, 25);
   }
 
-  // current score blink
+  // current score (blink at 100s)
   if (!blink || blinkTimer % 24 < 12) {
     context.fillText(displayScore, boardWidth - 60, 25);
   }
-  
+
+  // ===== GAME OVER UI =====
   if (GameOver) {
     context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
     context.drawImage(GameOverImg, boardWidth/2 - 200, boardHeight/2 - 50, 386, 40);
-    
-    return;
   }
-  
-  
-  // dino:
-  velocityY += gravity;
-  dino.y = Math.min(dino.y + velocityY, dinoY); // aply gravity to current dino.y, making sure it doesn't exceed the ground
-  context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
-  
-  // cactus:
-  for (let i = 0; i < cactusArray.length; i++) {
-    let cactus = cactusArray[i];
-    cactus.x += velocityX;
-    context.drawImage(cactus.img, cactus.x, cactus.y, cactus.width, cactus.height);
-    
-    if (detecktColision(dino, cactus)) {
-      GameOver = true;
-      
-      let finalScore = Math.floor(score);
-
-      if (finalScore > highScore) {
-        highScore = finalScore;
-        localStorage.setItem("highScore", highScore);
-        hiBlink = true;       // trigger flashing
-        hiBlinkTimer = 180;   // duration
-      }
-      
-      dinoImg.src = "./img/dino-dead.png";
-      
-      score = finalScore;
-    }
-  }
-  
-  score += Math.abs(velocityX) * 0.01;
 }
 
 function moveDino(e) {
