@@ -98,61 +98,12 @@ window.onload = function() {
 function update() {
   requestAnimationFrame(update);
   
-  if (GameOver) {
-    // draw score first
-
-    context.fillStyle = "black";
-    context.font = "20px monospace";
-
-    if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
-      context.fillText("HI " + displayHigh, boardWidth - 160, 25);
-    }
-
-    context.fillText(displayScore, boardWidth - 60, 25);
-
-    // then draw UI
-    context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
-    context.drawImage(GameOverImg, boardWidth/2 - 200, boardHeight/2 - 50, 386, 40);
-
-    return;
-  }
-  
   context.clearRect(0, 0, board.width, board.height);
-  
-  // dino:
-  velocityY += gravity;
-  dino.y = Math.min(dino.y + velocityY, dinoY); // aply gravity to current dino.y, making sure it doesn't exceed the ground
-  context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
 
-  // cactus:
-  for (let i = 0; i < cactusArray.length; i++) {
-    let cactus = cactusArray[i];
-    cactus.x += velocityX;
-    context.drawImage(cactus.img, cactus.x, cactus.y, cactus.width, cactus.height);
-
-    if (detecktColision(dino, cactus)) {
-      GameOver = true;
-
-      let finalScore = Math.floor(score);
-
-      if (finalScore > highScore) {
-        highScore = finalScore;
-        localStorage.setItem("highScore", highScore);
-        hiBlink = true;       // trigger flashing
-        hiBlinkTimer = 180;   // duration
-      }
-
-      dinoImg.src = "./img/dino-dead.png";
-
-      score = finalScore;
-    }
-  }
-
-  // score:
-  score += Math.abs(velocityX) * 0.01;
+  // ===== SCORE LOGIC FIRST =====
   
   let currentScore = Math.floor(score);
-
+  
   if (
     currentScore % 100 === 0 &&
     currentScore !== 0 &&
@@ -161,41 +112,79 @@ function update() {
     blink = true;
     blinkTimer = 150;
     lastMilestone = currentScore;
-    velocityX -= 1
+    velocityX -= .5;
   }
   
   if (blink) {
     blinkTimer--;
-    if (blinkTimer <= 0) {
-      blink = false;
-    }
+    if (blinkTimer <= 0) blink = false;
   }
 
   if (hiBlink) {
     hiBlinkTimer--;
-
-    if (hiBlinkTimer <= 0) {
-      hiBlink = false;
-    }
+    if (hiBlinkTimer <= 0) hiBlink = false;
   }
   
   let displayScore;
   let displayHigh = Math.floor(highScore).toString().padStart(5, "0");
-
+  
   if (!blink) {
     displayScore = Math.floor(score).toString().padStart(5, "0");
   } else {
     displayScore = (Math.floor(score) - (Math.floor(score) % 100)).toString().padStart(5, "0");
   }
-
-  context.fillStyle = "black";
-  context.font = "20px monospace";
-
-  // blink effect (hide score every few frames)
-  if (!blink || blinkTimer % 24 < 12) {
+  
+  if (GameOver) {
+    // draw score first
+    
+    context.fillStyle = "black";
+    context.font = "20px monospace";
+    
+    if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
+      context.fillText("HI " + displayHigh, boardWidth - 160, 25);
+    }
+    
     context.fillText(displayScore, boardWidth - 60, 25);
+    
+    // then draw UI
+    context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
+    context.drawImage(GameOverImg, boardWidth/2 - 200, boardHeight/2 - 50, 386, 40);
+    
+    return;
   }
+  
+  
+  // dino:
+  velocityY += gravity;
+  dino.y = Math.min(dino.y + velocityY, dinoY); // aply gravity to current dino.y, making sure it doesn't exceed the ground
+  context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+  
+  // cactus:
+  for (let i = 0; i < cactusArray.length; i++) {
+    let cactus = cactusArray[i];
+    cactus.x += velocityX;
+    context.drawImage(cactus.img, cactus.x, cactus.y, cactus.width, cactus.height);
+    
+    if (detecktColision(dino, cactus)) {
+      GameOver = true;
+      
+      let finalScore = Math.floor(score);
 
+      if (finalScore > highScore) {
+        highScore = finalScore;
+        localStorage.setItem("highScore", highScore);
+        hiBlink = true;       // trigger flashing
+        hiBlinkTimer = 180;   // duration
+      }
+      
+      dinoImg.src = "./img/dino-dead.png";
+      
+      score = finalScore;
+    }
+  }
+  
+  score += Math.abs(velocityX) * 0.01;
+  
   // HI score (blinks only when beaten)
   if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
     context.fillText("HI " + displayHigh, boardWidth - 160, 25);
