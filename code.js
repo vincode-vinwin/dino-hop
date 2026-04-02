@@ -133,20 +133,21 @@ function update() {
   } else {
     displayScore = (Math.floor(score) - (Math.floor(score) % 100)).toString().padStart(5, "0");
   }
+
+  context.fillStyle = "black";
+  context.font = "20px monospace";
+
+  // HI score blink
+  if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
+    context.fillText("HI " + displayHigh, boardWidth - 160, 25);
+  }
+
+  // current score blink
+  if (!blink || blinkTimer % 24 < 12) {
+    context.fillText(displayScore, boardWidth - 60, 25);
+  }
   
   if (GameOver) {
-    // draw score first
-    
-    context.fillStyle = "black";
-    context.font = "20px monospace";
-    
-    if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
-      context.fillText("HI " + displayHigh, boardWidth - 160, 25);
-    }
-    
-    context.fillText(displayScore, boardWidth - 60, 25);
-    
-    // then draw UI
     context.drawImage(restartImg, boardWidth/2 - 50, boardHeight/2 - 5, 76, 60);
     context.drawImage(GameOverImg, boardWidth/2 - 200, boardHeight/2 - 50, 386, 40);
     
@@ -184,11 +185,6 @@ function update() {
   }
   
   score += Math.abs(velocityX) * 0.01;
-  
-  // HI score (blinks only when beaten)
-  if (!hiBlink || Math.floor(hiBlinkTimer / 5) % 2 === 0) {
-    context.fillText("HI " + displayHigh, boardWidth - 160, 25);
-  }
 }
 
 function moveDino(e) {
