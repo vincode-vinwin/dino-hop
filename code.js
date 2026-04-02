@@ -84,7 +84,7 @@ window.onload = function() {
   cactus3Img = new Image();
   cactus3Img.src = "./img/cactus3.png";
 
-  highScore = localStorage.getItem("highScore") || 0;
+  highScore = 0;
 
 
   requestAnimationFrame(update);
@@ -126,7 +126,7 @@ function update() {
         highScore = finalScore;
         localStorage.setItem("highScore", highScore);
         hiBlink = true;       // trigger flashing
-        hiBlinkTimer = 60;    // duration
+        hiBlinkTimer = 120;    // duration
       }
 
       dinoImg.src = "./img/dino-dead.png";
@@ -184,7 +184,7 @@ function update() {
   }
 
   // HI score (blinks only when beaten)
-  if (!hiBlink || hiBlinkTimer % 6 < 3) {
+  if (!hiBlink || Math.floor((hiBlinkTimer / 5) % 2 === 0)) {
     context.fillText("HI " + displayHigh, boardWidth - 160, 25);
   }
 }
