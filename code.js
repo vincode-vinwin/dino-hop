@@ -89,17 +89,16 @@ window.onload = function() {
 
   requestAnimationFrame(update);
   setInterval(placeCactus, 1200); // 1000 miliseconds = 1 second
-  document.addEventListener("keydown", function() {
-    if ((e.code == "Space" || e.code == "ArrowUp") && dino.y >= dinoY - 1) {
-      jump()
+  document.addEventListener("keydown", function(e) {
+    if (e.code === "Space" || e.code === "ArrowUp") {
+      if (GameOver) {
+        restartGame();
+      } else {
+        jump();
+      }
     }
-  })
+  });
   document.addEventListener("click", restartGame);
-  document.addEventListener("keydown", function() {
-    if (e.code == "Space") {
-      restartGame()
-    }
-  })
   document.addEventListener("touchstart", jump)
 
 }
@@ -117,7 +116,7 @@ function update() {
     } else {
       dinoImg.src = "./img/dino-run2.png";
     }
-    if (velocityY < 0) {
+    if (!(dinoY == dino.y)) {
       dinoImg.src = "./img/dino-jump.png"
     }
     
@@ -148,7 +147,7 @@ function update() {
     }
 
     // score update
-    score += Math.abs(velocityX) * 0.03;
+    score += Math.abs(velocityX) * 0.015;
 
     let currentScore = Math.floor(score);
 
