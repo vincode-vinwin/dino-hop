@@ -92,7 +92,7 @@ window.onload = function() {
   document.addEventListener("keydown", moveDino)
   document.addEventListener("click", restartGame_onclick);
   document.addEventListener("keydown", restartGame_withSpace);
-  document.addEventListener("click", moveDino_onclick)
+  document.addEventListener("touchstart", moveDino_onclick)
 
 }
 
