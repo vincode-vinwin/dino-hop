@@ -204,7 +204,7 @@ function moveDino(e) {
     return;
   }
 
-  if ((e.code == "Space" || e.code == "ArrowUp") && dino.y == dinoY) {
+  if ((e.code == "Space" || e.code == "ArrowUp") && dino.y >= dinoY - 1) {
     // jump:
     velocityY = -10;
   }
@@ -215,8 +215,7 @@ function moveDino_onclick(e) {
     return;
   }
 
-  if (dino.y == dinoY) {
-    // jump:
+  if (dino.y >= dinoY - 1) {
     velocityY = -10;
   }
 }
