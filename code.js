@@ -89,20 +89,38 @@ window.onload = function() {
 
   requestAnimationFrame(update);
   setInterval(placeCactus, 1200); // 1000 miliseconds = 1 second
-  document.addEventListener("keydown", moveDino)
-  document.addEventListener("click", restartGame_onclick);
-  document.addEventListener("keydown", restartGame_withSpace);
-  document.addEventListener("touchstart", moveDino_onclick)
+  document.addEventListener("keydown", function() {
+    if ((e.code == "Space" || e.code == "ArrowUp") && dino.y >= dinoY - 1) {
+      jump()
+    }
+  })
+  document.addEventListener("click", restartGame);
+  document.addEventListener("keydown", function() {
+    if (e.code == "Space") {
+      restartGame()
+    }
+  })
+  document.addEventListener("touchstart", jump)
 
 }
 
 function update() {
   requestAnimationFrame(update);
-
+  
   context.clearRect(0, 0, board.width, board.height);
-
+  
+  
   // ===== UPDATE (only if game running) =====
   if (!GameOver) {
+    if ((Math.trunc(velocityY) % 10) <= 5) {
+      dinoImg.src = "./img/dino-run1.png";
+    } else {
+      dinoImg.src = "./img/dino-run2.png";
+    }
+    if (velocityY < 0) {
+      dinoImg.src = "./img/dino-jump.png"
+    }
+    
     // dino physics
     velocityY += gravity;
     dino.y = Math.min(dino.y + velocityY, dinoY);
@@ -130,7 +148,7 @@ function update() {
     }
 
     // score update
-    score += Math.abs(velocityX) * 0.01;
+    score += Math.abs(velocityX) * 0.03;
 
     let currentScore = Math.floor(score);
 
@@ -199,18 +217,7 @@ function update() {
   }
 }
 
-function moveDino(e) {
-  if (GameOver) {
-    return;
-  }
-
-  if ((e.code == "Space" || e.code == "ArrowUp") && dino.y >= dinoY - 1) {
-    // jump:
-    velocityY = -10;
-  }
-}
-
-function moveDino_onclick(e) {
+function jump(e) {
   if (GameOver) {
     return;
   }
@@ -254,7 +261,7 @@ function placeCactus() {
   }
 }
 
-function restartGame_onclick(e) {
+function restartGame(e) {
   if (!GameOver) return;
   // reset game state
   GameOver = false;
@@ -270,27 +277,6 @@ function restartGame_onclick(e) {
 
   // reset dino image
   dinoImg.src = "./img/dino.png";
-}
-
-
-function restartGame_withSpace(e) {
-  if (!GameOver) return;
-  if (e.code == "Space") {
-    // reset game state
-    GameOver = false;
-    cactusArray = [];
-    velocityY = 0;
-    dino.y = dinoY;
-    score = 0;
-    blink = false;
-    blinkTimer = 0;
-    velocityX = -8;
-    hiBlink = false;
-    hiBlinkTimer = 0;
-
-    // reset dino image
-    dinoImg.src = "./img/dino.png";
-  }
 }
 
 function detecktColision(a, b) {
