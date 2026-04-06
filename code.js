@@ -92,6 +92,7 @@ window.onload = function() {
   document.addEventListener("keydown", moveDino)
   document.addEventListener("click", restartGame_onclick);
   document.addEventListener("keydown", restartGame_withSpace);
+  document.addEventListener("click", moveDino_onclick)
 
 }
 
@@ -204,6 +205,17 @@ function moveDino(e) {
   }
 
   if ((e.code == "Space" || e.code == "ArrowUp") && dino.y == dinoY) {
+    // jump:
+    velocityY = -10;
+  }
+}
+
+function moveDino_onclick(e) {
+  if (GameOver) {
+    return;
+  }
+
+  if (dino.y == dinoY) {
     // jump:
     velocityY = -10;
   }
